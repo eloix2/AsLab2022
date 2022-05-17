@@ -52,9 +52,13 @@ public class PayStationImpl implements PayStation {
     return insertedSoFar / 5 * 2;
   }
   public Receipt buy() {
-    return null;
+	 Receipt r = new ReceiptImpl();
+	 r.changeValue(readDisplay());
+	 insertedSoFar = 0;
+	 return r;
   }
   public void cancel() {
+	  insertedSoFar = 0;
   }
 }
 

@@ -67,7 +67,53 @@ public class TestPayStation {
                   35 / 5 * 2, ps.readDisplay() );
     // 25 cent in 5 cent coins each giving 2 minutes parking
   }
+  @Test
+  public void insertVariousCoins() throws IllegalCoinException {
+	  ps.addPayment(5);
+	  ps.addPayment(10);
+	  ps.addPayment(25);
+	  Receipt r  = ps.buy();
+	  assertEquals(40/ 5 * 2, r.value());
 
+  }
+  
+  @Test
+  public void canStoreValues() throws IllegalCoinException {
+	  ps.addPayment(5);
+	  ps.addPayment(10);
+	  ps.addPayment(25);
+	  Receipt r  = ps.buy();
+	  assertEquals(40/ 5 * 2, r.value());
+
+  }
+  @Test
+  public void buys100() throws IllegalCoinException {
+	  add50cents();
+	  add50cents();
+	  Receipt r  = ps.buy();
+	  assertEquals(100/5 *2, r.value());
+
+  }
+  @Test
+  public void clearsafterbuy() throws IllegalCoinException {
+	  add50cents();
+	  Receipt r  = ps.buy();
+	  r = ps.buy();
+	  assertEquals(0/5 *2, r.value());
+
+  }
+  
+  @Test
+  public void cancelResetsPS() throws IllegalCoinException {
+	  add50cents();
+	  ps.cancel();
+	  assertEquals(0, ps.readDisplay());
+  }
+
+private void add50cents() throws IllegalCoinException {
+	ps.addPayment(25);
+	  ps.addPayment(25);
+}
   /** 
    * Verify that illegal coin values are rejected.
   */
