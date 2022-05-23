@@ -34,19 +34,20 @@ public class TestPayStation {
   /** Fixture for pay station testing. */
   @Before
   public void setUp() {
-	RateStrategy strat = new LinearRateStrategy();
+	RateStrategy strat = new One2OneStrategy();
     ps = new PayStationImpl(strat);
   }
 
+ 
   /**
    * Entering 5 cents should make the display report 2 minutes 
    * parking time.
   */
   @Test
-  public void shouldDisplay2MinFor5Cents() throws IllegalCoinException {
+  public void shouldDisplay5MinFor5Cents() throws IllegalCoinException {
     ps.addPayment( 5 );
     assertEquals( "Should display 2 min for 5 cents", 
-                  5 / 5 * 2, ps.readDisplay() ); 
+                  5, ps.readDisplay() ); 
   }
 
   /**
@@ -54,10 +55,10 @@ public class TestPayStation {
    * parking time.
   */
   @Test
-  public void shouldDisplay10MinFor25Cents() throws IllegalCoinException {
+  public void shouldDisplay25MinFor25Cents() throws IllegalCoinException {
     ps.addPayment( 25 );
     assertEquals( "Should display 10 min for 25 cents", 
-                  25 / 5 * 2, ps.readDisplay() );
+                  25, ps.readDisplay() );
     // 25 cent in 5 cent coins each giving 2 minutes parking
   }
 
@@ -74,12 +75,12 @@ public class TestPayStation {
    * return 14 minutes parking 
   */
   @Test
-  public void shouldDisplay14MinFor10And25Cents()
+  public void shouldDisplay35MinFor10And25Cents()
           throws IllegalCoinException {
     ps.addPayment( 10 );
     ps.addPayment( 25 );
     assertEquals( "Should display 14 min for 10+25 cents",
-                  (10+25) / 5 * 2, ps.readDisplay() );
+                  (10+25), ps.readDisplay() );
   }
 
   /**
@@ -96,8 +97,8 @@ public class TestPayStation {
     receipt = ps.buy();
     assertNotNull( "Receipt reference cannot be null",
                    receipt );
-    assertEquals( "Receipt value must be 16 min.",
-                  (5+10+25) / 5 * 2 , receipt.value() );
+    assertEquals( "Receipt value must be 40 min.",
+                  (5+10+25) , receipt.value() );
   }
  
   /**
@@ -126,7 +127,7 @@ public class TestPayStation {
 
     Receipt receipt;
     receipt = ps.buy();
-    assertEquals((5*10+2*25) / 5 * 2 , receipt.value() );
+    assertEquals((5*10+2*25), receipt.value() );
   }
   /**
    * Verify that the pay station is cleared after a buy scenario
@@ -142,10 +143,10 @@ public class TestPayStation {
     // verify that a following buy scenario behaves properly
     ps.addPayment(10); ps.addPayment(25);
     assertEquals( "Next add payment should display correct time",
-                  (10+25) / 5 * 2, ps.readDisplay() );
+                  (10+25), ps.readDisplay() );
     Receipt r = ps.buy();
     assertEquals( "Next buy should return valid receipt",
-                  (10+25) / 5 * 2, r.value() );
+                  (10+25), r.value() );
     assertEquals( "Again, display should be cleared",
                   0 , ps.readDisplay() );
   }
@@ -161,6 +162,6 @@ public class TestPayStation {
                   0 , ps.readDisplay() );
     ps.addPayment(25);
     assertEquals( "Insert after cancel should work",
-                  25/5*2 , ps.readDisplay() );
+                  25, ps.readDisplay() );
   }
 }
